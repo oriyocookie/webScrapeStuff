@@ -1,5 +1,5 @@
-from urllib.request import urlopen as uReq
 # This script just scrapes ebay looking for t440s thinkpad within a certain price range
+from urllib.request import urlopen as uReq
 from bs4 import BeautifulSoup as bSoup
 import re
 
