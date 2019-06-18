@@ -3,10 +3,9 @@ from urllib.request import urlopen as uReq
 from bs4 import BeautifulSoup as bSoup
 import re
 
-my_url = 'https://www.ebay.ca/sch/i.html?_from=R40&_trksid=p2380057.m570.l1313.TR12.TRC2.A0.H0.Xthinkpad+t440s.TRS0&_nkw=thinkpad+t440s&_sacat=0'
 
 
-def conn():
+def conn(my_url):
     # open connection and read from page
     uClient = uReq(my_url)
     page_html = uClient.read()
@@ -18,7 +17,9 @@ def conn():
 priceLookup = input("Please enter the price you are willing to pay max: ")
 print("You will be looking within $100-" + str(priceLookup) + " range")
 
-pageSoup = conn()
+my_url = 'https://www.ebay.ca/sch/i.html?_from=R40&_trksid=p2380057.m570.l1313.TR12.TRC2.A0.H0.Xthinkpad+t440s.TRS0&_nkw=thinkpad+t440s&_sacat=0'
+
+pageSoup = conn(my_url)
 
 name = pageSoup.findAll("h3", {"class": "lvtitle"})
 
