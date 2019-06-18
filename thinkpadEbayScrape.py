@@ -23,8 +23,6 @@ pageSoup = conn(my_url1)
 
 name = pageSoup.findAll("h3", {"class": "lvtitle"})
 
-link = pageSoup.findAll("a", {"class": "vip"})
-
 price = pageSoup.findAll("li", {"class": "lvprice prc"})
 
 
@@ -39,7 +37,7 @@ totalItems = len(price)
 
 while i < totalItems:
     printName = name[i].a.text.strip()
-    printLink = link[i].get('href')
+    printLink = name[i].a.get('href')
     printPrice = price[i].span.text.replace(" ", "")
     slicePrice = float(re.search(r'\d+\.+\d+\d', printPrice).group())
     totalPrice += slicePrice
