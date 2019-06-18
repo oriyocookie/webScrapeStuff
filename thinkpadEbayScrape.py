@@ -14,47 +14,49 @@ def conn(my_url):
     return pageSoup
 
 
+def scrapeTheWeb(my_url, maxPrice):
+
+    print("You will be looking within $100-" + str(maxPrice) + " range")
+    pageSoup = conn(my_url)
+    name = pageSoup.findAll("h3", {"class": "lvtitle"})
+    price = pageSoup.findAll("li", {"class": "lvprice prc"})
+
+    i = 0
+    totalPrice = 0
+    includedPrice = 0
+    included = 0
+    totalItems = len(price)
+
+    while i < totalItems:
+        printName = name[i].a.text.strip()
+        printLink = name[i].a.get('href')
+        printPrice = price[i].span.text.replace(" ", "").replace(",", "")
+        slicePrice = float(re.search(r'\d+\.+\d+\d', printPrice).group())
+        totalPrice += slicePrice
+
+        if slicePrice < float(maxPrice) and slicePrice > 100:
+            print("name: " + printName)
+            print("link: " + printLink)
+            print("price: " + printPrice)
+            print("_" * 40 + "\n")
+            print(slicePrice)
+            included += 1
+            includedPrice += slicePrice
+
+        i += 1
+
+    avgPrice = totalPrice / totalItems
+    includedPrice = includedPrice / included
+
+    print("The average price of all " + str(totalItems) + " Thinkpads is: $" + str(avgPrice))
+
+    print("The average price of the listed " + str(included) + " Thinkpads is: $" + str(includedPrice))
+
+# --- Code goes here ---
+
+
 maxPrice = input("Please enter the price you are willing to pay max: ")
-print("You will be looking within $100-" + str(maxPrice) + " range")
 
-my_url1 = 'https://www.ebay.ca/sch/i.html?_from=R40&_trksid=p2380057.m570.l1313.TR12.TRC2.A0.H0.Xthinkpad+t440s.TRS0&_nkw=thinkpad+t440s&_sacat=0'
+my_url1 = 'https://www.ebay.ca/sch/i.html?_from=R40&_sacat=0&_nkw=thinkpad+t440s&_ipg=200&rt=nc'
 
-pageSoup = conn(my_url1)
-
-name = pageSoup.findAll("h3", {"class": "lvtitle"})
-
-price = pageSoup.findAll("li", {"class": "lvprice prc"})
-
-
-# print("number of items: " + str(totalItems))
-
-i = 0
-totalPrice = 0
-includedPrice = 0
-included = 0
-
-totalItems = len(price)
-
-while i < totalItems:
-    printName = name[i].a.text.strip()
-    printLink = name[i].a.get('href')
-    printPrice = price[i].span.text.replace(" ", "")
-    slicePrice = float(re.search(r'\d+\.+\d+\d', printPrice).group())
-    totalPrice += slicePrice
-
-    if slicePrice < float(maxPrice) and slicePrice > 100:
-        print("name: " + printName)
-        print("link: " + printLink)
-        print("price: " + printPrice)
-        print("_" * 40 + "\n")
-        included += 1
-        includedPrice += slicePrice
-
-    i += 1
-
-avgPrice = totalPrice / totalItems
-includedPrice = includedPrice / included
-
-print("The average price of all " + str(totalItems) + " Thinkpads is: $" + str(avgPrice))
-
-print("The average price of the listed " + str(included) + " Thinkpads is: $" + str(includedPrice))
+scrapeTheWeb(my_url1, maxPrice)
