@@ -1,8 +1,7 @@
-# This script just scrapes ebay looking for t440s thinkpad within a certain price range
 from urllib.request import urlopen as uReq
+# This script just scrapes ebay looking for t440s thinkpad within a certain price range
 from bs4 import BeautifulSoup as bSoup
 import re
-
 
 
 def conn(my_url):
@@ -17,9 +16,9 @@ def conn(my_url):
 priceLookup = input("Please enter the price you are willing to pay max: ")
 print("You will be looking within $100-" + str(priceLookup) + " range")
 
-my_url = 'https://www.ebay.ca/sch/i.html?_from=R40&_trksid=p2380057.m570.l1313.TR12.TRC2.A0.H0.Xthinkpad+t440s.TRS0&_nkw=thinkpad+t440s&_sacat=0'
+my_url1 = 'https://www.ebay.ca/sch/i.html?_from=R40&_trksid=p2380057.m570.l1313.TR12.TRC2.A0.H0.Xthinkpad+t440s.TRS0&_nkw=thinkpad+t440s&_sacat=0'
 
-pageSoup = conn(my_url)
+pageSoup = conn(my_url1)
 
 name = pageSoup.findAll("h3", {"class": "lvtitle"})
 
@@ -31,16 +30,30 @@ price = pageSoup.findAll("li", {"class": "lvprice prc"})
 # print("number of items: " + str(len(price)))
 
 i = 0
+totalPrice = 0
+includedPrice = 0
+included = 0
+
 while i < len(price):
     printName = name[i].a.text.strip()
     printLink = link[i].get('href')
-    printPrice = price[i].span.text.strip()
-    slicePrice = int(re.search(r'\d+', printPrice).group())
+    printPrice = price[i].span.text.replace(" ", "")
+    slicePrice = float(re.search(r'\d+\.+\d+\d', printPrice).group())
+    totalPrice += slicePrice
 
-    if slicePrice < int(priceLookup) and slicePrice > 100:
+    if slicePrice < float(priceLookup) and slicePrice > 100:
         print("name: " + printName)
         print("link: " + printLink)
         print("price: " + printPrice)
-        print("_"*40 + "\n")
+        print("_" * 40 + "\n")
+        included += 1
+        includedPrice += slicePrice
 
     i += 1
+
+avgPrice = totalPrice / len(price)
+includedPrice = includedPrice / included
+
+print("The average price of all " + str(len(price)) + " Thinkpads is: $" + str(avgPrice))
+
+print("The average price of the listed " + str(included) + " Thinkpads is: $" + str(includedPrice))
